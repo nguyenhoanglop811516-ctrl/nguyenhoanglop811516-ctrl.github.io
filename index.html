@@ -90,10 +90,12 @@
                 font-weight: bold;
             }
             @media only screen and (max-width: 768px) {
-                body {
-                    font-size: 16px;
-                    line-height: 1.8;
-                    padding: 10px;
+    .canvas {
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+}
+
                 }
 
                 img#logo {
@@ -198,8 +200,9 @@
                     requestFrame.call(window, this.loop.bind(this));
                 },
                 adjustCanvas: function () {
-                    canvas.width = window.innerWidth - 100;
-                    canvas.height = window.innerHeight - 30;
+                    canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
                 },
                 clearFrame: function () {
                     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -422,7 +425,7 @@
             }
         };
         S.ShapeBuilder = (function () {
-            var gap = 13,
+var gap = window.innerWidth < 768 ? 6 : 13; // nhỏ hơn khi màn hình nhỏ
                 shapeCanvas = document.createElement('canvas'),
                 shapeContext = shapeCanvas.getContext('2d'),
                 fontSize = 500,
@@ -695,4 +698,5 @@ render();
 </script>
 </body>
 </html>
+
 
