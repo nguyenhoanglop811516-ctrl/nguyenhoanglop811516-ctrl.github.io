@@ -7,6 +7,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <!--<meta itemprop="image" content="./images/fenxiang.png" />-->
         <style>
+            #fireworksCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* không chặn click */
+    z-index: 1; /* nằm dưới chữ */
+}
             html {
                 height: 100%;
             }
@@ -23,12 +32,10 @@
                 color: #ebf7f4;
             }
             .body--ready {
-                background: -webkit-linear-gradient(top, rgb(203, 214, 235) 0%, rgb(64, 59, 112) 50%);
-                background: -moz-linear-gradient(top, rgba(223, 203, 235, 0.084) 0%, rgb(55, 148, 192) 10%);
-                background: -o-linear-gradient(top, rgb(203, 235, 219) 0%, rgb(25, 27, 29) 20%);
-                background: -ms-linear-gradient(top, rgb(203, 235, 219) 0%, rgb(47, 52, 54) 20%);
-                background: linear-gradient(top, rgb(203, 235, 219) 0%, rgb(14, 14, 15) 20%);
+                  background: url('bg.jpg.jpg') no-repeat center center fixed;
+    background-size: cover;
             }
+            
             .text {
                 position: fixed;
                 bottom: 100px;
@@ -124,6 +131,7 @@
     </head>
     
     <body>
+        <canvas id="fireworksCanvas"></canvas>
     <div class="cs">
         <img src="H0.jpg" id="logo">
     </div>
@@ -156,7 +164,7 @@
             init: function () {
                 S.Drawing.init('.canvas');
                 document.body.classList.add('body--ready');
-                S.UI.simulate("Hello|chị|hôm nay|là ngày| đặc biệt|#countdown 3|Happy | Birthday| Chị Hoài|xinh đẹp |21/09|#time|🎂");
+                S.UI.simulate("Hello|Chị Guột|Bây giờ|hãy nhắm| mắt lại|đếm tới 3|rồi| mở mắt |#countdown 3|Happy | Birthday| Chị Hoài|xinh đẹp |21/09|#time|🎂");
                 S.Drawing.loop(function () {
                     S.Shape.render();
                 });
@@ -330,7 +338,7 @@
             });
             this.e = 0.07;
             this.s = true;
-            this.c = new S.Color(255, 255, 255, this.p.a);
+            this.c = new S.Color(174, 238, 238, this.p.a);
             this.t = this.clone();
             this.q = [];
         };
@@ -620,5 +628,70 @@
             audio.play();
         }, { once: true }); // Đảm bảo chỉ chạy một lần
     </script>
+    <script>
+const canvas = document.getElementById('fireworksCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function createFirework(x, y, color) {
+    const particleCount = 50;
+    for (let i = 0; i < particleCount; i++) {
+        particles.push({
+            x: x,
+            y: y,
+            speed: random(2, 6),
+            angle: random(0, Math.PI * 2),
+            radius: random(2, 4),
+            alpha: 1,
+            decay: random(0.015, 0.03),
+            color: color
+        });
+    }
+}
+
+function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
+        p.alpha -= p.decay;
+
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (p.alpha <= 0) particles.splice(i, 1);
+    });
+    requestAnimationFrame(render);
+}
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+canvas.addEventListener('click', (e) => {
+    createFirework(e.clientX, e.clientY, `hsl(${Math.random()*360},100%,70%)`);
+});
+
+// Bắn pháo hoa tự động mỗi 1 giây
+setInterval(() => {
+    const x = random(100, canvas.width - 100);
+    const y = random(100, canvas.height / 2);
+    createFirework(x, y, `hsl(${random(300, 330)}, 100%, 70%)`
+);
+}, 1000);
+
+render();
+</script>
 </body>
 </html>
